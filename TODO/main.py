@@ -8,15 +8,16 @@ from models import todolist_table
 
 app = FastAPI()
 
-# Connect to Postgresql DB
-@app.on_event("connection")
-async def connection():
+# Connect to PostgreSQL DB on startup
+@app.on_event("startup")
+async def startup():
     await database.connect()
 
-# disConnect to Postgresql DB
-@app.on_event("disconnection")
-async def disconnection():
+# Disconnect from PostgreSQL DB on shutdown
+@app.on_event("shutdown")
+async def shutdown():
     await database.disconnect()
+
 
 # Pydantic model
 class Todo(BaseModel):

@@ -9,6 +9,7 @@ from config import configs
 # Define your asynchronous database connection URL
 # Note the use of 'asyncpg' driver
 ASYNC_SQLALCHEMY_DATABASE_URL = configs.DATABASE_URL.replace("postgresql://", "postgresql+asyncpg://")
+SQLALCHEMY_DATABASE_URL = configs.DATABASE_URL
 
 # Create an asynchronous engine instance connected to your PostgreSQL database
 async_engine = create_async_engine(
@@ -27,6 +28,11 @@ AsyncSessionLocal = async_sessionmaker(
     expire_on_commit=False,  # keep objects in-memory after commit
     autoflush=False  # only flush when you explicitly call .flush()/.commit()
 )
+# DB/database.py
+
+async def get_async_db() -> AsyncSession:
+    async with AsyncSessionLocal() as session:
+        yield session
 
 # Declare the base class for all models
 Base = declarative_base()
